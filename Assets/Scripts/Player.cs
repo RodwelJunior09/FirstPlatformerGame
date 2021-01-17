@@ -3,8 +3,12 @@
 public class Player : MonoBehaviour
 {
     // Config Variables
+    [SerializeField] int health = 100;
     [SerializeField] float playerSpeed = 10f;
     [SerializeField] float jumpSpeed = 5f;
+    [SerializeField] Transform attackPoint;
+    [SerializeField] float attackRange = 1f;
+    [SerializeField] int attackDamage = 30;
 
     // Cache components references
     Animator myAnimator;
@@ -12,6 +16,9 @@ public class Player : MonoBehaviour
 
     BoxCollider2D _myFeetCollider;
     CapsuleCollider2D _bodyCollider;
+
+    // Local variables
+    private float timeToDestroy = 5f;
 
     private void Start()
     {
@@ -64,10 +71,45 @@ public class Player : MonoBehaviour
 
     private void Attack()
     {
+        var enemyLayer = LayerMask.GetMask("Enemy");
         if (Input.GetButtonDown("Fire1"))
         {
+            // Activate animation
             myAnimator.SetTrigger("IsAttacking");
+
+            // Look for the collision
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
+
+            foreach (var colliderEnemy in hitEnemies)
+            {
+                colliderEnemy.GetComponent<Enemy>().GotHit(attackDamage);
+            }
+
         }
+    }
+
+    public void DamageTaken(int damageAmount)
+    {
+        health -= damageAmount;
+        myAnimator.SetTrigger("IsHit");
+        if (health <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        myAnimator.SetBool("IsDead", true);
+        Destroy(gameObject, timeToDestroy);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null)
+            return;
+
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 
     private void FlipSprite()
