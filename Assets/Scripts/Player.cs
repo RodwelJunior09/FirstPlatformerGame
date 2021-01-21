@@ -3,22 +3,28 @@
 public class Player : MonoBehaviour
 {
     // Config Variables
+    [Header("Player Info")]
     [SerializeField] int health = 100;
     [SerializeField] float playerSpeed = 10f;
     [SerializeField] float jumpSpeed = 5f;
-    [SerializeField] Transform attackPoint;
-    [SerializeField] float attackRange = 1f;
+
+    [Header("Player Attack Variables")]
     [SerializeField] int attackDamage = 30;
+    [SerializeField] float attackRate = 2f;
+    [SerializeField] float attackRange = 1f;
+
+    [Header("Other Attributes")]
+    [SerializeField] Transform attackPoint;
 
     // Cache components references
     Animator myAnimator;
     Rigidbody2D myridigBody2D;
-
     BoxCollider2D _myFeetCollider;
     CapsuleCollider2D _bodyCollider;
 
     // Local variables
     private float timeToDestroy = 5f;
+    private float nextAttackTime = 0f;
 
     private void Start()
     {
@@ -71,20 +77,28 @@ public class Player : MonoBehaviour
 
     private void Attack()
     {
-        var enemyLayer = LayerMask.GetMask("Enemy");
-        if (Input.GetButtonDown("Fire1"))
+        if (Time.time >= nextAttackTime)
         {
-            // Activate animation
-            myAnimator.SetTrigger("IsAttacking");
-
-            // Look for the collision
-            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
-
-            foreach (var colliderEnemy in hitEnemies)
+            if (Input.GetButtonDown("Fire1"))
             {
-                colliderEnemy.GetComponent<Enemy>().GotHit(attackDamage);
+                AttackProcess();
+                nextAttackTime = Time.time + 1f / attackRate;
             }
+        }
+    }
 
+    void AttackProcess()
+    {
+        var enemyLayer = LayerMask.GetMask("Enemy");
+        // Activate animation
+        myAnimator.SetTrigger("IsAttacking");
+
+        // Look for the collision
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
+
+        foreach (var colliderEnemy in hitEnemies)
+        {
+            colliderEnemy.GetComponent<Enemy>().GotHit(attackDamage);
         }
     }
 
@@ -100,7 +114,9 @@ public class Player : MonoBehaviour
 
     void Die()
     {
-        myAnimator.SetBool("IsDead", true);
+        _bodyCollider.enabled = false;
+
+        myAnimator.SetTrigger("IsDead");
         Destroy(gameObject, timeToDestroy);
     }
 
