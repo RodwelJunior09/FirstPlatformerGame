@@ -1,29 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
     // Serialize Variables
+    [Header("Enemy Attributes")]
     [SerializeField] int health = 100;
     [SerializeField] float enemySpeed = 1f;
-    [SerializeField] Transform attackPoint;
+
+    [Header("Enemy Attack Settings")]
+    [SerializeField] int enemyAttackValue = 30;
     [SerializeField] float attackRange = 2f;
-    [SerializeField] int attackEnemy = 30;
-    [SerializeField] float attackRate = 10f;
+    [SerializeField] float maxAttackTime = 5f;
+    [SerializeField] float minAttackTime = 1f;
+
+    [Header("Other Settings")]
+    [SerializeField] Transform attackPoint;
+
     // Components Variables
     Animator _myAnimator;
     Rigidbody2D _myRigidBody2D;
     BoxCollider2D _myEnemyVision;
+    CapsuleCollider2D _enemyBody;
     CircleCollider2D _myEnemyAttackRadius;
+
     // Local Variables
-    private float durationOfDissapearing = 5f;
+    private float durationOfDissapearing = 3f;
+    private float attackCounter;
 
     // Start is called before the first frame update
     void Start()
     {
+        ResetAttackCounter();
         _myAnimator = GetComponent<Animator>();
         _myRigidBody2D = GetComponent<Rigidbody2D>();
+        _enemyBody = GetComponent<CapsuleCollider2D>();
         _myEnemyVision = GetComponentInChildren<BoxCollider2D>();
         _myEnemyAttackRadius = GetComponentInChildren<CircleCollider2D>();
     }
@@ -33,7 +43,7 @@ public class Enemy : MonoBehaviour
     {
         RunToThePlayer();
         IsEnemyVisible();
-        IsInAttackRange();
+        CountDownAndAttack();
     }
 
     void IsEnemyVisible()
@@ -46,31 +56,31 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void IsInAttackRange()
+    void CountDownAndAttack()
     {
-        var playerLayer = LayerMask.GetMask("Player");
-        if (!_myEnemyAttackRadius.IsTouchingLayers(playerLayer)) _myAnimator.SetBool("IsAttacking", false);
-        if (_myEnemyAttackRadius.IsTouchingLayers(playerLayer))
+        attackCounter -= Time.deltaTime;
+        if (attackCounter <= 0f)
         {
-            // Set animation
-            StartCoroutine(HitPlayer(playerLayer));
+            IsInAttackRange();
+            ResetAttackCounter();
         }
     }
 
-    private IEnumerator HitPlayer(int layerPlayer)
+    void ResetAttackCounter()
     {
-        // Set animation
-        _myAnimator.SetTrigger("IsAttacking");
+        attackCounter = Random.Range(minAttackTime, maxAttackTime);
+    }
 
-        // Look for collision
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, layerPlayer);
-
-        foreach (var colliderEnemy in hitEnemies)
+    void IsInAttackRange()
+    {
+        var playerLayer = LayerMask.GetMask("Player");
+        if (_myEnemyAttackRadius.IsTouchingLayers(playerLayer))
         {
-            colliderEnemy.GetComponent<Player>().DamageTaken(attackEnemy);
+            // Set animation
+            _myAnimator.SetTrigger("IsAttacking");
+            var collider = Physics2D.OverlapCircle(attackPoint.position, attackRange, playerLayer);
+            collider.GetComponent<Player>().DamageTaken(enemyAttackValue);
         }
-
-        yield return new WaitForSeconds(attackRate);
     }
 
     void RunToThePlayer()
@@ -108,8 +118,16 @@ public class Enemy : MonoBehaviour
 
     void Die()
     {
+        DisableEnemyColliders();
         _myAnimator.SetBool("IsDead", true);
         Destroy(gameObject, durationOfDissapearing);
+    }
+
+    void DisableEnemyColliders()
+    {
+        _enemyBody.enabled = false;
+        _myEnemyVision.enabled = false;
+        _myEnemyAttackRadius.enabled = false;
     }
 
     private void OnDrawGizmosSelected()
