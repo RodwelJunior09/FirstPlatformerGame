@@ -6,7 +6,7 @@ public class Borders : MonoBehaviour
     {
         if (other.gameObject.tag.Equals("Enemy"))
         {
-            StartCoroutine(other.GetComponent<Enemy>().FlipSprite());
+            other.GetComponent<Enemy>().RandomCrouchAnimation();
         }
     }
 }

@@ -25,13 +25,13 @@ public class Enemy : MonoBehaviour
     CircleCollider2D _myEnemyAttackRadius;
 
     // Local Variables
-    private float durationOfDissapearing = 3f;
     private float attackCounter;
+    private float durationOfDissapearing = 3f;
 
     // Start is called before the first frame update
     void Start()
     {
-        ResetAttackCounter();
+        ResetCounters();
         _myAnimator = GetComponent<Animator>();
         _myRigidBody2D = GetComponent<Rigidbody2D>();
         _enemyBody = GetComponent<CapsuleCollider2D>();
@@ -61,17 +61,26 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void RandomCrouchAnimation()
+    {
+        var randomNumber = Random.Range(1, 10);
+        if (randomNumber % 2 == 0)
+            StartCoroutine(FlipSprite(true)); // Flip sprite with crouching animation
+        else
+            StartCoroutine(FlipSprite()); // Flip sprite with no crouching animation
+    }
+
     void CountDownAndAttack()
     {
         attackCounter -= Time.deltaTime;
         if (attackCounter <= 0f)
         {
             IsInAttackRange();
-            ResetAttackCounter();
+            ResetCounters();
         }
     }
 
-    void ResetAttackCounter()
+    void ResetCounters()
     {
         attackCounter = Random.Range(minAttackTime, maxAttackTime);
     }
@@ -133,10 +142,13 @@ public class Enemy : MonoBehaviour
         return transform.localScale.x > 0;
     }
 
-    public IEnumerator FlipSprite()
+    IEnumerator FlipSprite(bool crouchingAnimtion = false)
     {
-        _myAnimator.SetTrigger("IsSearching");
-        yield return new WaitForSeconds(2);
+        if (crouchingAnimtion)
+        {
+            _myAnimator.SetTrigger("IsSearching");
+            yield return new WaitForSeconds(2);
+        }
         transform.localScale = new Vector2(Mathf.Sign(_myRigidBody2D.velocity.x), 1f);
     }
 
