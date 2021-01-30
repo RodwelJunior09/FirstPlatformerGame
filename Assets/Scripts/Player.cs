@@ -35,11 +35,15 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
-        Run();
         Jump();
         Falling();
-        FlipSprite();
         Attack();
+    }
+
+    void FixedUpdate()
+    {
+        Run();
+        FlipSprite();
     }
 
     private void Run()
@@ -68,10 +72,12 @@ public class Player : MonoBehaviour
         if (myridigBody2D.velocity.y < -0.1)
         {
             myAnimator.SetBool("IsFalling", true);
+            SetMovementSpeed(0f); // The player cannot move while falling
         }
         else
         {
             myAnimator.SetBool("IsFalling", false);
+            SetMovementSpeed(5f); // The player can move again.
         }
     }
 
@@ -90,6 +96,7 @@ public class Player : MonoBehaviour
     void AttackProcess()
     {
         var enemyLayer = LayerMask.GetMask("Enemy");
+
         // Activate animation
         myAnimator.SetTrigger("IsAttacking");
 
@@ -136,5 +143,10 @@ public class Player : MonoBehaviour
             float rotation = Mathf.Sign(myridigBody2D.velocity.x);
             transform.localScale = new Vector3(rotation, 1f, 1f);
         }
+    }
+
+    void SetMovementSpeed(float speed)
+    {
+        playerSpeed = speed;
     }
 }

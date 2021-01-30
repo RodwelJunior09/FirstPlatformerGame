@@ -15,6 +15,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] float minAttackTime = 1f;
 
     [Header("Other Settings")]
+    [SerializeField] bool patrol = false;
     [SerializeField] Transform attackPoint;
 
     // Components Variables
@@ -113,7 +114,7 @@ public class Enemy : MonoBehaviour
             _myRigidBody2D.velocity = Vector2.zero; // Stop running
             _myAnimator.SetBool("IsRunning", false);
         }
-        if (!isRangeOfAttack && !isRangeOfVision)
+        if (!isRangeOfAttack && !isRangeOfVision && patrol)
         {
             WalkToWayPoint();
         }
@@ -176,7 +177,6 @@ public class Enemy : MonoBehaviour
 
     void DisableEnemyColliders()
     {
-        _enemyBody.enabled = false;
         _myEnemyVision.enabled = false;
         _myEnemyAttackRadius.enabled = false;
     }
