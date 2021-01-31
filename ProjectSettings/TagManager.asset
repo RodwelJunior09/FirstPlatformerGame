@@ -46,12 +46,15 @@ TagManager:
   - name: Background
     uniqueID: 2791114193
     locked: 0
+  - name: Foreground
+    uniqueID: 1602924459
+    locked: 0
+  - name: Cave
+    uniqueID: 673130671
+    locked: 0
   - name: Enemies
     uniqueID: 769968497
     locked: 0
   - name: Player
     uniqueID: 3200299087
-    locked: 0
-  - name: Foreground
-    uniqueID: 1602924459
     locked: 0
