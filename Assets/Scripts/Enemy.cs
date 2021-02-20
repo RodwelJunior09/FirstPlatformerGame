@@ -105,8 +105,12 @@ public class Enemy : MonoBehaviour
         var isRangeOfAttack = _myEnemyAttackRadius.IsTouchingLayers(playerLayer);
         if (!isRangeOfAttack && isRangeOfVision)
         {
+            Vector2 enemyRididBody;
             _myAnimator.SetBool("IsRunning", true);
-            Vector2 enemyRididBody = new Vector2(-enemySpeed, _myRigidBody2D.velocity.y);
+            if (transform.localScale.x > 0)
+                enemyRididBody = new Vector2(-enemySpeed, _myRigidBody2D.velocity.y);
+            else
+                enemyRididBody = new Vector2(enemySpeed, _myRigidBody2D.velocity.y);
             _myRigidBody2D.velocity = enemyRididBody;
         }
         if (isRangeOfVision && isRangeOfAttack)
