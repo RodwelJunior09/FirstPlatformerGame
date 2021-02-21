@@ -106,6 +106,7 @@ public class Player : MonoBehaviour
         foreach (var colliderEnemy in hitEnemies)
         {
             colliderEnemy.GetComponent<Enemy>().GotHit(attackDamage);
+            colliderEnemy.GetComponent<Enemy>().EnemyAwareness(transform);
         }
     }
 
