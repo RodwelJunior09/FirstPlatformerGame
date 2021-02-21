@@ -52,13 +52,13 @@ public class Enemy : MonoBehaviour
         EnemyWalkPattern();
     }
 
-    void IsEnemyVisible()
+    public void GotHit(int damage)
     {
-        var playerLayer = LayerMask.GetMask("Player");
-        if (!_myEnemyVision.IsTouchingLayers(playerLayer)) _myAnimator.SetBool("IsEnemyVisible", false);
-        if (_myEnemyVision.IsTouchingLayers(playerLayer))
+        health -= damage;
+        _myAnimator.SetTrigger("IsHit");
+        if (health <= 0)
         {
-            _myAnimator.SetBool("IsEnemyVisible", true);
+            Die();
         }
     }
 
@@ -69,6 +69,16 @@ public class Enemy : MonoBehaviour
             StartCoroutine(FlipSprite(true)); // Flip sprite with crouching animation
         else
             StartCoroutine(FlipSprite()); // Flip sprite with no crouching animation
+    }
+
+    void IsEnemyVisible()
+    {
+        var playerLayer = LayerMask.GetMask("Player");
+        if (!_myEnemyVision.IsTouchingLayers(playerLayer)) _myAnimator.SetBool("IsEnemyVisible", false);
+        if (_myEnemyVision.IsTouchingLayers(playerLayer))
+        {
+            _myAnimator.SetBool("IsEnemyVisible", true);
+        }
     }
 
     void CountDownAndAttack()
@@ -104,42 +114,37 @@ public class Enemy : MonoBehaviour
         var isRangeOfVision = _myEnemyVision.IsTouchingLayers(playerLayer);
         var isRangeOfAttack = _myEnemyAttackRadius.IsTouchingLayers(playerLayer);
         if (!isRangeOfAttack && isRangeOfVision)
-        {
-            Vector2 enemyRididBody;
-            _myAnimator.SetBool("IsRunning", true);
-            if (transform.localScale.x > 0)
-                enemyRididBody = new Vector2(-enemySpeed, _myRigidBody2D.velocity.y);
-            else
-                enemyRididBody = new Vector2(enemySpeed, _myRigidBody2D.velocity.y);
-            _myRigidBody2D.velocity = enemyRididBody;
-        }
+            ApproachThePlayer();
         if (isRangeOfVision && isRangeOfAttack)
-        {
-            _myRigidBody2D.velocity = Vector2.zero; // Stop running
-            _myAnimator.SetBool("IsRunning", false);
-        }
+            StopRunning();
         if (!isRangeOfAttack && !isRangeOfVision && patrol)
-        {
-            WalkToWayPoint();
-        }
+            EnemyPatrol();
     }
 
-    void WalkToWayPoint()
+    void StopRunning()
     {
+        _myRigidBody2D.velocity = Vector2.zero; // Stop running
+        _myAnimator.SetBool("IsRunning", false);
+    }
+
+    void ApproachThePlayer()
+    {
+        Vector2 enemyRididBody;
         _myAnimator.SetBool("IsRunning", true);
-        EnemyPatrol();
+        if (transform.localScale.x > 0)
+            enemyRididBody = new Vector2(-enemySpeed, _myRigidBody2D.velocity.y);
+        else
+            enemyRididBody = new Vector2(enemySpeed, _myRigidBody2D.velocity.y);
+        _myRigidBody2D.velocity = enemyRididBody;
     }
 
     void EnemyPatrol()
     {
+        _myAnimator.SetBool("IsRunning", true);
         if (IsFacingRight())
-        {
             _myRigidBody2D.velocity = new Vector2(-enemySpeed, 0f);
-        }
         else
-        {
             _myRigidBody2D.velocity = new Vector2(enemySpeed, 0f);
-        }
     }
 
     bool IsFacingRight()
@@ -155,16 +160,6 @@ public class Enemy : MonoBehaviour
             yield return new WaitForSeconds(2);
         }
         transform.localScale = new Vector2(Mathf.Sign(_myRigidBody2D.velocity.x), 1f);
-    }
-
-    public void GotHit(int damage)
-    {
-        health -= damage;
-        _myAnimator.SetTrigger("IsHit");
-        if (health <= 0)
-        {
-            Die();
-        }
     }
 
     void Die()
