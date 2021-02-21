@@ -62,10 +62,16 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void EnemyAwareness(Transform playerPosition)
+    {
+        var distance = (playerPosition.position.x - transform.position.x) / Mathf.Abs(playerPosition.position.x - transform.position.x);
+        if (distance > 0) transform.localScale = new Vector2(Mathf.Sign(_myRigidBody2D.velocity.x), 1f);
+    }
+
     public void RandomCrouchAnimation()
     {
         var randomNumber = Random.Range(1, 10);
-        if (randomNumber % 2 == 0)
+        if (randomNumber % 2 != 0)
             StartCoroutine(FlipSprite(true)); // Flip sprite with crouching animation
         else
             StartCoroutine(FlipSprite()); // Flip sprite with no crouching animation
@@ -114,7 +120,10 @@ public class Enemy : MonoBehaviour
         var isRangeOfVision = _myEnemyVision.IsTouchingLayers(playerLayer);
         var isRangeOfAttack = _myEnemyAttackRadius.IsTouchingLayers(playerLayer);
         if (!isRangeOfAttack && isRangeOfVision)
+        {
             ApproachThePlayer();
+            patrol = true;
+        }
         if (isRangeOfVision && isRangeOfAttack)
             StopRunning();
         if (!isRangeOfAttack && !isRangeOfVision && patrol)
@@ -176,6 +185,7 @@ public class Enemy : MonoBehaviour
 
     void DisableEnemyColliders()
     {
+        patrol = false;
         _myEnemyVision.enabled = false;
         _myEnemyAttackRadius.enabled = false;
     }
