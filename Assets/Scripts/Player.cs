@@ -19,8 +19,8 @@ public class Player : MonoBehaviour
     // Cache components references
     Animator myAnimator;
     Rigidbody2D myridigBody2D;
-    BoxCollider2D _myFeetCollider;
-    CapsuleCollider2D _bodyCollider;
+    BoxCollider2D myFeetCollider;
+    CapsuleCollider2D bodyCollider;
 
     // Local variables
     private float timeToDestroy = 5f;
@@ -30,13 +30,13 @@ public class Player : MonoBehaviour
     {
         myAnimator = GetComponent<Animator>();
         myridigBody2D = GetComponent<Rigidbody2D>();
-        _myFeetCollider = GetComponent<BoxCollider2D>();
-        _bodyCollider = GetComponent<CapsuleCollider2D>();
+        bodyCollider = GetComponent<CapsuleCollider2D>();
+        myFeetCollider = GetComponent<BoxCollider2D>();
     }
     void Update()
     {
         Jump();
-        Falling();
+        Fall();
         Attack();
     }
 
@@ -58,7 +58,7 @@ public class Player : MonoBehaviour
     private void Jump()
     {
         var ground = LayerMask.GetMask("Ground");
-        if (!_myFeetCollider.IsTouchingLayers(ground)) { return; }
+        if (!myFeetCollider.IsTouchingLayers(ground)) return;
         if (Input.GetButtonDown("Jump"))
         {
             Vector2 jumpVelocityToAdd = new Vector2(0f, jumpSpeed);
@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void Falling()
+    private void Fall()
     {
         if (myridigBody2D.velocity.y < -0.1)
         {
@@ -113,15 +113,12 @@ public class Player : MonoBehaviour
     {
         health -= damageAmount;
         myAnimator.SetTrigger("IsHit");
-        if (health <= 0)
-        {
-            Die();
-        }
+        if (health <= 0) Die();
     }
 
     void Die()
     {
-        _bodyCollider.enabled = false;
+        bodyCollider.enabled = false;
 
         myAnimator.SetTrigger("IsDead");
         Destroy(gameObject, timeToDestroy);
