@@ -98,6 +98,7 @@ public class Player : MonoBehaviour
 
     void Fall()
     {
+        // Debug.Log(myridigBody2D.velocity.y);
         if (myridigBody2D.velocity.y < -0.1)
         {
             myAnimator.SetBool("IsFalling", true);
@@ -108,6 +109,17 @@ public class Player : MonoBehaviour
             myAnimator.SetBool("IsFalling", false);
             SetMovementSpeed(5f); // The player can move again.
         }
+        // var ground = LayerMask.GetMask("Ground");
+        // if(!myFeetCollider.IsTouchingLayers(ground))
+        // {
+        //     myAnimator.SetBool("IsFalling", true);
+        //     SetMovementSpeed(0f); // The player cannot move while falling
+        // }
+        // else
+        // {
+        //     myAnimator.SetBool("IsFalling", false);
+        //     SetMovementSpeed(5f); // The player can move again.
+        // }
     }
 
     void Attack()
