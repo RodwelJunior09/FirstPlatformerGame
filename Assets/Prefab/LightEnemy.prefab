@@ -275,8 +275,8 @@ MonoBehaviour:
   enemySpeed: 1.5
   enemyAttackValue: 20
   attackRange: 0.23
-  maxAttackTime: 2
-  minAttackTime: 1
+  maxAttackTime: 1
+  minAttackTime: 0.5
   patrol: 0
   attackPoint: {fileID: 1363007228}
 --- !u!95 &7374371115454156957

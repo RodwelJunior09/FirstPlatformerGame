@@ -5,6 +5,7 @@ public class Player : MonoBehaviour
     // Config Variables
     [Header("Player Info")]
     [SerializeField] int health = 100;
+    [SerializeField] int stamina = 100;
     [SerializeField] float playerSpeed = 10f;
     [SerializeField] float jumpSpeed = 5f;
 
@@ -25,6 +26,7 @@ public class Player : MonoBehaviour
     // Local variables
     private float timeToDestroy = 5f;
     private float nextAttackTime = 0f;
+    private bool playerBlocking = false;
 
     private void Start()
     {
@@ -38,6 +40,7 @@ public class Player : MonoBehaviour
         Jump();
         Fall();
         Attack();
+        PlayerBlock();
     }
 
     void FixedUpdate()
@@ -46,7 +49,33 @@ public class Player : MonoBehaviour
         FlipSprite();
     }
 
-    private void Run()
+    public void DamageTaken(int damageAmount)
+    {
+        if (playerBlocking) // If player blocks reduce half of the damage.
+        {
+            damageAmount /= 2;
+            myAnimator.SetTrigger("Blocked");
+        }
+        health -= damageAmount;
+        if (!playerBlocking) myAnimator.SetTrigger("IsHit");
+        if (health <= 0) Die();
+    }
+
+    void PlayerBlock()
+    {
+        if (Input.GetKey(KeyCode.K))
+        {
+            myAnimator.SetBool("IsBlocking", true); // Implement the damage reduction when blocking.
+            playerBlocking = true;
+        }
+        else
+        {
+            myAnimator.SetBool("IsBlocking", false);
+            playerBlocking = false;
+        }
+    }
+
+    void Run()
     {
         float flowControl = Input.GetAxis("Horizontal") * playerSpeed;
         Vector2 playerVelocity = new Vector2(flowControl, myridigBody2D.velocity.y);
@@ -55,7 +84,7 @@ public class Player : MonoBehaviour
         myAnimator.SetBool("IsRunning", playerHorizontalSpeed);
     }
 
-    private void Jump()
+    void Jump()
     {
         var ground = LayerMask.GetMask("Ground");
         if (!myFeetCollider.IsTouchingLayers(ground)) return;
@@ -67,7 +96,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void Fall()
+    void Fall()
     {
         if (myridigBody2D.velocity.y < -0.1)
         {
@@ -81,7 +110,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void Attack()
+    void Attack()
     {
         if (Time.time >= nextAttackTime)
         {
@@ -110,13 +139,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void DamageTaken(int damageAmount)
-    {
-        health -= damageAmount;
-        myAnimator.SetTrigger("IsHit");
-        if (health <= 0) Die();
-    }
-
     void Die()
     {
         bodyCollider.enabled = false;
@@ -133,7 +155,7 @@ public class Player : MonoBehaviour
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 
-    private void FlipSprite()
+    void FlipSprite()
     {
         bool playerHorizontalSpeed = Mathf.Abs(myridigBody2D.velocity.x) > Mathf.Epsilon;
         if (playerHorizontalSpeed)
