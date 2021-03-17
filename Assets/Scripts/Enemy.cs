@@ -55,11 +55,8 @@ public class Enemy : MonoBehaviour
     public void GotHit(int damage)
     {
         health -= damage;
-        _myAnimator.SetTrigger("IsHit");
-        if (health <= 0)
-        {
-            Die();
-        }
+        if (health <= 0) Die();
+        else _myAnimator.SetTrigger("IsHit");
     }
 
     public void EnemyAwareness(Transform playerPosition)
