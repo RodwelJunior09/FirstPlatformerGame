@@ -222,7 +222,7 @@ MonoBehaviour:
   jumpSpeed: 9
   attackDamage: 30
   attackRate: 2
-  attackRange: 0.19
+  attackRange: 0.09
   attackPoint: {fileID: 743618366}
 --- !u!61 &2085958187
 BoxCollider2D:

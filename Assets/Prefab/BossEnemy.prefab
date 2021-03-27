@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 4082081971123826707}
   - component: {fileID: 4082081971123826704}
   - component: {fileID: 4082081971123826705}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: FieldOfView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -200,7 +200,7 @@ GameObject:
   - component: {fileID: 4082081971708812818}
   m_Layer: 11
   m_Name: BossEnemy
-  m_TagString: Untagged
+  m_TagString: Boss
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -214,7 +214,7 @@ Transform:
   m_GameObject: {fileID: 4082081971708812809}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -4.02, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_Children:
   - {fileID: 4082081969990700338}
   - {fileID: 4082081971123826707}
@@ -293,7 +293,7 @@ MonoBehaviour:
   health: 500
   enemySpeed: 3
   enemyAttackValue: 75
-  attackRange: 2
+  attackRange: 0.14
   maxAttackTime: 5
   minAttackTime: 1
   patrol: 0

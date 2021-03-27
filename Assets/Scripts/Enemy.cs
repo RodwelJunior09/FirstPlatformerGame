@@ -28,11 +28,13 @@ public class Enemy : MonoBehaviour
     // Local Variables
     private float attackCounter;
     private float durationOfDissapearing = 3f;
+    private string tagEnemy;
 
     // Start is called before the first frame update
     void Start()
     {
         ResetCounters();
+        tagEnemy = gameObject.tag;
         _myAnimator = GetComponent<Animator>();
         _myRigidBody2D = GetComponent<Rigidbody2D>();
         _enemyBody = GetComponent<CapsuleCollider2D>();
@@ -43,7 +45,7 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        IsEnemyVisible();
+        if (!tagEnemy.Contains("Boss")) IsEnemyVisible();
         CountDownAndAttack();
     }
 
@@ -61,9 +63,22 @@ public class Enemy : MonoBehaviour
 
     public void EnemyAwareness(Transform playerPosition)
     {
-        var distance = (playerPosition.position.x - transform.position.x) / Mathf.Abs(playerPosition.position.x - transform.position.x);
-        if (distance > 0) transform.localScale = new Vector2(Mathf.Sign(_myRigidBody2D.velocity.x), 1f);
+        if (playerPosition.localScale.x < 0 && transform.localScale.x > 0)
+        {
+            if (tagEnemy.Contains("Boss"))
+                transform.localScale = new Vector2(-1.5f, 1.5f);
+            else
+                transform.localScale = new Vector2(-1f, 1f);
+        }
+        if (playerPosition.localScale.x > 0 && transform.localScale.x < 0)
+        {
+            if (tagEnemy.Contains("Boss"))
+                transform.localScale = new Vector2(1.5f, 1.5f);
+            else
+                transform.localScale = new Vector2(1f, 1f);
+        }
     }
+
 
     public void RandomCrouchAnimation()
     {
@@ -72,6 +87,15 @@ public class Enemy : MonoBehaviour
             StartCoroutine(FlipSprite(true)); // Flip sprite with crouching animation
         else
             StartCoroutine(FlipSprite()); // Flip sprite with no crouching animation
+    }
+
+    void RotateTheBossEnemy()
+    {
+        var rotation = Mathf.Sign(_myRigidBody2D.velocity.x);
+        if (rotation < 0)
+            transform.localScale = new Vector2(-1.5f, 1.5f);
+        else
+            transform.localScale = new Vector2(1.5f, 1.5f);
     }
 
     void IsEnemyVisible()
@@ -119,7 +143,7 @@ public class Enemy : MonoBehaviour
         if (!isRangeOfAttack && isRangeOfVision)
         {
             ApproachThePlayer();
-            patrol = true;
+            if(!tagEnemy.Contains("Boss")) patrol = true;
         }
         if (isRangeOfVision && isRangeOfAttack)
             StopRunning();
@@ -158,9 +182,9 @@ public class Enemy : MonoBehaviour
         return transform.localScale.x > 0;
     }
 
-    IEnumerator FlipSprite(bool crouchingAnimtion = false)
+    IEnumerator FlipSprite(bool crouchingAnimation = false)
     {
-        if (crouchingAnimtion)
+        if (crouchingAnimation)
         {
             _myAnimator.SetTrigger("IsSearching");
             yield return new WaitForSeconds(2);
