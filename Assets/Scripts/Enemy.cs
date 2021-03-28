@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Other Settings")]
     [SerializeField] bool patrol = false;
+    [SerializeField] float restingSeconds;
     [SerializeField] Transform attackPoint;
 
     // Components Variables
@@ -28,7 +29,11 @@ public class Enemy : MonoBehaviour
     // Local Variables
     private float attackCounter;
     private float durationOfDissapearing = 3f;
+    
+    // Boss variables
     private string tagEnemy;
+    private bool crouching = false;
+    private float bossRestingCount = 10f;
 
     // Start is called before the first frame update
     void Start()
@@ -38,15 +43,18 @@ public class Enemy : MonoBehaviour
         _myAnimator = GetComponent<Animator>();
         _myRigidBody2D = GetComponent<Rigidbody2D>();
         _enemyBody = GetComponent<CapsuleCollider2D>();
-        _myEnemyVision = GetComponentInChildren<BoxCollider2D>();
-        _myEnemyAttackRadius = GetComponentInChildren<CircleCollider2D>();
+        _myEnemyVision = transform.Find("FieldOfView").GetComponent<BoxCollider2D>();
+        _myEnemyAttackRadius = transform.Find("FieldOfView").GetComponent<CircleCollider2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!tagEnemy.Contains("Boss")) IsEnemyVisible();
         CountDownAndAttack();
+        if (!tagEnemy.Contains("Boss")) 
+            IsEnemyVisible();
+        if(tagEnemy.Contains("Boss")) 
+            EnemyStageTransition();
     }
 
     void FixedUpdate()
@@ -88,14 +96,27 @@ public class Enemy : MonoBehaviour
         else
             StartCoroutine(FlipSprite()); // Flip sprite with no crouching animation
     }
-
-    void RotateTheBossEnemy()
+    
+    void EnemyStageTransition()
     {
-        var rotation = Mathf.Sign(_myRigidBody2D.velocity.x);
-        if (rotation < 0)
-            transform.localScale = new Vector2(-1.5f, 1.5f);
-        else
-            transform.localScale = new Vector2(1.5f, 1.5f);
+        if (health <= 250 && bossRestingCount > 1)
+        {
+            StartCoroutine(RestingAnimation());
+        }
+    }
+    // Maybe a refactor down the line. Looks kinda crowded I don't like it.
+    IEnumerator RestingAnimation()
+    {
+        crouching = true;
+        _myAnimator.SetBool("IsResting", crouching);
+        FindObjectOfType<Spawner>().SetEnemies();
+        DisableEnemyColliders();
+        yield return new WaitForSeconds(bossRestingCount);
+        crouching = false;
+        _myAnimator.SetBool("IsResting", crouching);
+        ActivateColliders();
+        bossRestingCount -= 1;
+        FindObjectOfType<Spawner>().StopSpawn();
     }
 
     void IsEnemyVisible()
@@ -111,7 +132,7 @@ public class Enemy : MonoBehaviour
     void CountDownAndAttack()
     {
         attackCounter -= Time.deltaTime;
-        if (attackCounter <= 0f)
+        if (attackCounter <= 0f && !crouching)
         {
             IsInAttackRange();
             ResetCounters();
@@ -208,8 +229,18 @@ public class Enemy : MonoBehaviour
     {
         patrol = false;
         _myEnemyVision.enabled = false;
+        _enemyBody.enabled = false;
         _myEnemyAttackRadius.enabled = false;
     }
+
+    void ActivateColliders()
+    {
+        _myEnemyVision.enabled = true;
+        _enemyBody.enabled = true;
+        _myEnemyAttackRadius.enabled = true;
+    }
+
+    
 
     private void OnDrawGizmosSelected()
     {
