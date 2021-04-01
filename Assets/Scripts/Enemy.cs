@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
     // Serialize Variables
     [Header("Enemy Attributes")]
     [SerializeField] int health = 100;
-    [SerializeField] float enemySpeed = 1f;
+    [SerializeField] public float enemySpeed = 1f;
 
     [Header("Enemy Attack Settings")]
     [SerializeField] int enemyAttackValue = 30;
@@ -15,8 +15,12 @@ public class Enemy : MonoBehaviour
     [SerializeField] float minAttackTime = 1f;
 
     [Header("Other Settings")]
-    [SerializeField] bool patrol = false;
+    [SerializeField] public bool patrol = false;
     [SerializeField] Transform attackPoint;
+
+    [Header("Boss Variables")]
+    [SerializeField] float restingSeconds = 10f;
+    [SerializeField] int limitHelperEnemies = 3;
 
     // Components Variables
     Animator _myAnimator;
@@ -28,23 +32,34 @@ public class Enemy : MonoBehaviour
     // Local Variables
     private float attackCounter;
     private float durationOfDissapearing = 3f;
+    
+    // Boss variables
+    private string tagEnemy;
+    private bool isBossAlive = true;
+    private bool crouching = false;
+    private bool enemyStage = false;
+    private int helperEnemiesCount = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         ResetCounters();
+        tagEnemy = gameObject.tag;
         _myAnimator = GetComponent<Animator>();
         _myRigidBody2D = GetComponent<Rigidbody2D>();
         _enemyBody = GetComponent<CapsuleCollider2D>();
-        _myEnemyVision = GetComponentInChildren<BoxCollider2D>();
-        _myEnemyAttackRadius = GetComponentInChildren<CircleCollider2D>();
+        _myEnemyVision = transform.Find("FieldOfView").GetComponent<BoxCollider2D>();
+        _myEnemyAttackRadius = transform.Find("FieldOfView").GetComponent<CircleCollider2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        IsEnemyVisible();
         CountDownAndAttack();
+        if (!tagEnemy.Contains("Boss")) 
+            IsEnemyVisible();
+        if(tagEnemy.Contains("Boss")) 
+            EnemyStageTransition();
     }
 
     void FixedUpdate()
@@ -61,9 +76,22 @@ public class Enemy : MonoBehaviour
 
     public void EnemyAwareness(Transform playerPosition)
     {
-        var distance = (playerPosition.position.x - transform.position.x) / Mathf.Abs(playerPosition.position.x - transform.position.x);
-        if (distance > 0) transform.localScale = new Vector2(Mathf.Sign(_myRigidBody2D.velocity.x), 1f);
+        if (playerPosition.localScale.x < 0 && transform.localScale.x > 0)
+        {
+            if (tagEnemy.Contains("Boss"))
+                transform.localScale = new Vector2(-1.5f, 1.5f);
+            else
+                transform.localScale = new Vector2(-1f, 1f);
+        }
+        if (playerPosition.localScale.x > 0 && transform.localScale.x < 0)
+        {
+            if (tagEnemy.Contains("Boss"))
+                transform.localScale = new Vector2(1.5f, 1.5f);
+            else
+                transform.localScale = new Vector2(1f, 1f);
+        }
     }
+
 
     public void RandomCrouchAnimation()
     {
@@ -73,21 +101,58 @@ public class Enemy : MonoBehaviour
         else
             StartCoroutine(FlipSprite()); // Flip sprite with no crouching animation
     }
+    
+    void EnemyStageTransition()
+    {
+        if (health <= 250 && !enemyStage)
+            StartCoroutine(RestingAnimation());
+    }
+
+    public bool BossDied() => isBossAlive;
+
+
+    // Maybe a refactor down the line. Looks kinda crowded I don't like it.
+    IEnumerator RestingAnimation()
+    {
+        SpawnHelperEnemies();
+        yield return new WaitForSeconds(restingSeconds);
+        StopSpawningHelperEnemies();
+    }
+
+    void SpawnHelperEnemies()
+    {
+        if (helperEnemiesCount <= limitHelperEnemies)
+        {
+            crouching = true;
+            _myAnimator.SetBool("IsResting", crouching);
+            FindObjectOfType<Spawner>().SpawnEnemies();
+            DisableEnemyColliders();
+            helperEnemiesCount++;
+        }
+    }
+
+
+    void StopSpawningHelperEnemies()
+    {
+        crouching = false;
+        _myAnimator.SetBool("IsResting", crouching);
+        enemyStage = true;
+        ActivateColliders();
+    }
 
     void IsEnemyVisible()
     {
         var playerLayer = LayerMask.GetMask("Player");
-        if (!_myEnemyVision.IsTouchingLayers(playerLayer)) _myAnimator.SetBool("IsEnemyVisible", false);
+        if (!_myEnemyVision.IsTouchingLayers(playerLayer)) 
+            _myAnimator.SetBool("IsEnemyVisible", false);
         if (_myEnemyVision.IsTouchingLayers(playerLayer))
-        {
             _myAnimator.SetBool("IsEnemyVisible", true);
-        }
     }
 
     void CountDownAndAttack()
     {
         attackCounter -= Time.deltaTime;
-        if (attackCounter <= 0f)
+        if (attackCounter <= 0f && !crouching)
         {
             IsInAttackRange();
             ResetCounters();
@@ -119,7 +184,7 @@ public class Enemy : MonoBehaviour
         if (!isRangeOfAttack && isRangeOfVision)
         {
             ApproachThePlayer();
-            patrol = true;
+            if(!tagEnemy.Contains("Boss")) patrol = true;
         }
         if (isRangeOfVision && isRangeOfAttack)
             StopRunning();
@@ -158,9 +223,9 @@ public class Enemy : MonoBehaviour
         return transform.localScale.x > 0;
     }
 
-    IEnumerator FlipSprite(bool crouchingAnimtion = false)
+    IEnumerator FlipSprite(bool crouchingAnimation = false)
     {
-        if (crouchingAnimtion)
+        if (crouchingAnimation)
         {
             _myAnimator.SetTrigger("IsSearching");
             yield return new WaitForSeconds(2);
@@ -172,6 +237,8 @@ public class Enemy : MonoBehaviour
     {
         DisableEnemyColliders();
         _myAnimator.SetBool("IsDead", true);
+        if (tagEnemy.Contains("Boss"))
+            isBossAlive = false;
         Destroy(gameObject, durationOfDissapearing);
     }
 
@@ -184,8 +251,18 @@ public class Enemy : MonoBehaviour
     {
         patrol = false;
         _myEnemyVision.enabled = false;
+        _enemyBody.enabled = false;
         _myEnemyAttackRadius.enabled = false;
     }
+
+    void ActivateColliders()
+    {
+        _myEnemyVision.enabled = true;
+        _enemyBody.enabled = true;
+        _myEnemyAttackRadius.enabled = true;
+    }
+
+    
 
     private void OnDrawGizmosSelected()
     {

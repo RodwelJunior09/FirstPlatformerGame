@@ -271,13 +271,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c6627231e022604387eabfe9c28c03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
-  enemySpeed: 1.5
+  health: 150
+  enemySpeed: 2.5
   enemyAttackValue: 20
   attackRange: 0.23
   maxAttackTime: 1
   minAttackTime: 0.5
   patrol: 0
+  restingSeconds: 0
   attackPoint: {fileID: 1363007228}
 --- !u!95 &7374371115454156957
 Animator:
