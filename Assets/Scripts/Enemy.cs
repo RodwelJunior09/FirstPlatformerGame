@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
     // Serialize Variables
     [Header("Enemy Attributes")]
     [SerializeField] int health = 100;
-    [SerializeField] float enemySpeed = 1f;
+    [SerializeField] public float enemySpeed = 1f;
 
     [Header("Enemy Attack Settings")]
     [SerializeField] int enemyAttackValue = 30;
@@ -15,9 +15,12 @@ public class Enemy : MonoBehaviour
     [SerializeField] float minAttackTime = 1f;
 
     [Header("Other Settings")]
-    [SerializeField] bool patrol = false;
-    [SerializeField] float restingSeconds;
+    [SerializeField] public bool patrol = false;
     [SerializeField] Transform attackPoint;
+
+    [Header("Boss Variables")]
+    [SerializeField] float restingSeconds = 10f;
+    [SerializeField] int limitHelperEnemies = 3;
 
     // Components Variables
     Animator _myAnimator;
@@ -32,8 +35,10 @@ public class Enemy : MonoBehaviour
     
     // Boss variables
     private string tagEnemy;
+    private bool isBossAlive = true;
     private bool crouching = false;
-    private float bossRestingCount = 10f;
+    private bool enemyStage = false;
+    private int helperEnemiesCount = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -99,34 +104,49 @@ public class Enemy : MonoBehaviour
     
     void EnemyStageTransition()
     {
-        if (health <= 250 && bossRestingCount > 1)
-        {
+        if (health <= 250 && !enemyStage)
             StartCoroutine(RestingAnimation());
-        }
     }
+
+    public bool BossDied() => isBossAlive;
+
+
     // Maybe a refactor down the line. Looks kinda crowded I don't like it.
     IEnumerator RestingAnimation()
     {
-        crouching = true;
-        _myAnimator.SetBool("IsResting", crouching);
-        FindObjectOfType<Spawner>().SetEnemies();
-        DisableEnemyColliders();
-        yield return new WaitForSeconds(bossRestingCount);
+        SpawnHelperEnemies();
+        yield return new WaitForSeconds(restingSeconds);
+        StopSpawningHelperEnemies();
+    }
+
+    void SpawnHelperEnemies()
+    {
+        if (helperEnemiesCount <= limitHelperEnemies)
+        {
+            crouching = true;
+            _myAnimator.SetBool("IsResting", crouching);
+            FindObjectOfType<Spawner>().SpawnEnemies();
+            DisableEnemyColliders();
+            helperEnemiesCount++;
+        }
+    }
+
+
+    void StopSpawningHelperEnemies()
+    {
         crouching = false;
         _myAnimator.SetBool("IsResting", crouching);
+        enemyStage = true;
         ActivateColliders();
-        bossRestingCount -= 1;
-        FindObjectOfType<Spawner>().StopSpawn();
     }
 
     void IsEnemyVisible()
     {
         var playerLayer = LayerMask.GetMask("Player");
-        if (!_myEnemyVision.IsTouchingLayers(playerLayer)) _myAnimator.SetBool("IsEnemyVisible", false);
+        if (!_myEnemyVision.IsTouchingLayers(playerLayer)) 
+            _myAnimator.SetBool("IsEnemyVisible", false);
         if (_myEnemyVision.IsTouchingLayers(playerLayer))
-        {
             _myAnimator.SetBool("IsEnemyVisible", true);
-        }
     }
 
     void CountDownAndAttack()
@@ -217,6 +237,8 @@ public class Enemy : MonoBehaviour
     {
         DisableEnemyColliders();
         _myAnimator.SetBool("IsDead", true);
+        if (tagEnemy.Contains("Boss"))
+            isBossAlive = false;
         Destroy(gameObject, durationOfDissapearing);
     }
 

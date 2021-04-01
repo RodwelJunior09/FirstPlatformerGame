@@ -10,25 +10,18 @@ public class Spawner : MonoBehaviour
     //[SerializeField] Attacker _enemyPrefab;
     [SerializeField] Enemy[] _enemiesPrefabs;
 
-    // Start is called before the first frame update
-    IEnumerator Start()
-    {
-        while (keepSpawning)
-        {
-            yield return StartCoroutine(SetEnemies());
-        }
-    }
+    private float speed = 3.5f;
 
     public void StopSpawn() => keepSpawning = false;
 
     public IEnumerator SetEnemies()
     {
         var randomNumber = Random.Range(minSpawnDelay, maxSpawnDelay);
-        yield return new WaitForSeconds(randomNumber);
         SpawnEnemies();
+        yield return new WaitForSeconds(randomNumber);
     }
 
-    private void SpawnEnemies()
+    public void SpawnEnemies()
     {
         var randomIndex = Random.Range(0, _enemiesPrefabs.Length - 1);
         Spawn(randomIndex);
@@ -36,7 +29,11 @@ public class Spawner : MonoBehaviour
 
     private void Spawn(int index)
     {
+        speed -= 0.5f;
         Enemy attacker = Instantiate(_enemiesPrefabs[index], transform.position, transform.rotation) as Enemy;
+        attacker.enemySpeed = speed;
+        attacker.GetComponent<Enemy>().patrol = true;
+        attacker.transform.localScale = new Vector2(-1f, 1f);
         attacker.transform.parent = transform;
     }
 }

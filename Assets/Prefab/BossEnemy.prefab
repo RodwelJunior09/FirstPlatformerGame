@@ -298,8 +298,9 @@ MonoBehaviour:
   maxAttackTime: 5
   minAttackTime: 1
   patrol: 0
-  restingSeconds: 0
   attackPoint: {fileID: 4082081970688926649}
+  restingSeconds: 8
+  limitHelperEnemies: 3
 --- !u!61 &1599947685
 BoxCollider2D:
   m_ObjectHideFlags: 0
