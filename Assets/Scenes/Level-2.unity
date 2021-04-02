@@ -42447,8 +42447,8 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: 3.5, y: 15.514721}
-      - {x: -22.453403, y: 15.366076}
-      - {x: -22.897556, y: -9.861546}
+      - {x: -23.6386, y: 15.366076}
+      - {x: -23.714933, y: -9.861546}
       - {x: 38.990547, y: -9.581669}
       - {x: 39.00463, y: 5.778684}
       - {x: 38.905624, y: 15.2384205}
@@ -43057,12 +43057,12 @@ PrefabInstance:
     - target: {fileID: 7893044224779111453, guid: 0ccaa5211340b484db38365ab03af712,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -15.13966
+      value: -15.466746
       objectReference: {fileID: 0}
     - target: {fileID: 7893044224779111453, guid: 0ccaa5211340b484db38365ab03af712,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.7920213
+      value: -5.794338
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ccaa5211340b484db38365ab03af712, type: 3}

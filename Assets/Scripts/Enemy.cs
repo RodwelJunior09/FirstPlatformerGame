@@ -110,7 +110,6 @@ public class Enemy : MonoBehaviour
 
     public bool BossDied() => isBossAlive;
 
-
     // Maybe a refactor down the line. Looks kinda crowded I don't like it.
     IEnumerator RestingAnimation()
     {
@@ -238,7 +237,7 @@ public class Enemy : MonoBehaviour
         DisableEnemyColliders();
         _myAnimator.SetBool("IsDead", true);
         if (tagEnemy.Contains("Boss"))
-            isBossAlive = false;
+            FindObjectOfType<LevelManager>().LoadWinLevel();
         Destroy(gameObject, durationOfDissapearing);
     }
 

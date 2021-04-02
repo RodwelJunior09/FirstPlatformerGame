@@ -12833,12 +12833,12 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: 3.5, y: 15.514721}
-      - {x: -22.453403, y: 15.366076}
-      - {x: -22.897556, y: -9.861546}
+      - {x: -21.736479, y: 15.605049}
+      - {x: -21.822172, y: -9.781887}
       - {x: 29.909575, y: -9.75638}
-      - {x: 30.274012, y: 1.7040415}
-      - {x: 30.548695, y: 13.603147}
-      - {x: 30.525606, y: 15.296715}
+      - {x: 30.075476, y: 1.8033094}
+      - {x: 30.201256, y: 13.652781}
+      - {x: 30.178167, y: 15.147813}
 --- !u!1001 &1889229434
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12846,6 +12846,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1764796932, guid: cc192b10e3fbb3b489227a839da2e7e4, type: 3}
+      propertyPath: health
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8776827055057979353, guid: cc192b10e3fbb3b489227a839da2e7e4,
         type: 3}
       propertyPath: m_Name

@@ -4,5 +4,35 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/TitleScreen.unity
+    guid: 7fb0dec53cfb4a7409ee0ddae7f5582a
+  - enabled: 1
+    path: Assets/Scenes/MissionStatement.unity
+    guid: 0a583521ead3d774e990533644363cd4
+  - enabled: 1
+    path: Assets/Scenes/HowToPlay.unity
+    guid: b69c0c21363bc7f4982f0399432d3749
+  - enabled: 1
+    path: Assets/Scenes/IntroductionToTheCave.unity
+    guid: 18018e3ee501b4e4d91831136116f33a
+  - enabled: 1
+    path: Assets/Scenes/Level-2.unity
+    guid: d2d4147d994e8ea44b58460a5c35b6d6
+  - enabled: 1
+    path: Assets/Scenes/Level-3.unity
+    guid: 63565d36d423199409af8a0c63b1568e
+  - enabled: 1
+    path: Assets/Scenes/Level-4.unity
+    guid: 90232850cd6fe5143ab12587545389b3
+  - enabled: 1
+    path: Assets/Scenes/Level-5.unity
+    guid: 8c731026a44c82c4ca0ede3e80b8b70e
+  - enabled: 1
+    path: Assets/Scenes/LoseScreen.unity
+    guid: 97717667b9031b74aae06664e5f6449a
+  - enabled: 1
+    path: Assets/Scenes/WinScreen.unity
+    guid: 5e414eef87bf1614a9e9035a00c55dd2
   m_configObjects: {}
