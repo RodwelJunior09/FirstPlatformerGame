@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
     public void LoadNextScene()
     {
-        Debug.Log("Load next scene");
-        //int currentScene = SceneManager.GetActiveScene().buildIndex;
-        //SceneManager.LoadScene(currentScene + 1);
+        int currentScene = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentScene + 1);
     }
 
     public void QuitGame()
@@ -15,25 +15,35 @@ public class LevelManager : MonoBehaviour
         Application.Quit();
     }
 
-    public void LoadGameOverScene()
+    public void LoadGameMenu()
     {
-
+        SceneManager.LoadScene("TitleScreen");
     }
 
-    public void LoadGameScene()
+    public void LoadFirstLevel()
     {
+        SceneManager.LoadScene("IntroductionToTheCave");
+    }
 
+    public void LoadWinLevel()
+    {
+        StartCoroutine(PlayerWins());
+    }
+
+    public void LoadGameOver()
+    {
+        StartCoroutine(GameOver());
     }
 
     IEnumerator PlayerWins()
     {
         yield return new WaitForSeconds(1);
-        Debug.Log("Player Wins! Congratulations");
+        SceneManager.LoadScene("WinScreen");
     }
 
     IEnumerator GameOver()
     {
         yield return new WaitForSeconds(1);
-        Debug.Log("Game Over");
+        SceneManager.LoadScene("LoseScreen");
     }
 }

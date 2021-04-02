@@ -145,6 +145,8 @@ public class Player : MonoBehaviour
 
         myAnimator.SetTrigger("IsDead");
         Destroy(gameObject, timeToDestroy);
+
+        FindObjectOfType<LevelManager>().LoadGameOver();
     }
 
     private void OnDrawGizmosSelected()
