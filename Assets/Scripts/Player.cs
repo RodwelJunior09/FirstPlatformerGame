@@ -77,11 +77,14 @@ public class Player : MonoBehaviour
 
     void Run()
     {
-        float flowControl = Input.GetAxis("Horizontal") * playerSpeed;
-        Vector2 playerVelocity = new Vector2(flowControl, myridigBody2D.velocity.y);
-        myridigBody2D.velocity = playerVelocity;
-        bool playerHorizontalSpeed = Mathf.Abs(myridigBody2D.velocity.x) > Mathf.Epsilon;
-        myAnimator.SetBool("IsRunning", playerHorizontalSpeed);
+        if (!playerBlocking)
+        {
+            float flowControl = Input.GetAxis("Horizontal") * playerSpeed;
+            Vector2 playerVelocity = new Vector2(flowControl, myridigBody2D.velocity.y);
+            myridigBody2D.velocity = playerVelocity;
+            bool playerHorizontalSpeed = Mathf.Abs(myridigBody2D.velocity.x) > Mathf.Epsilon;
+            myAnimator.SetBool("IsRunning", playerHorizontalSpeed);
+        }
     }
 
     void Jump()
