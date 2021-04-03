@@ -35,6 +35,11 @@ public class LevelManager : MonoBehaviour
         StartCoroutine(GameOver());
     }
 
+    public void LoadCredits()
+    {
+        SceneManager.LoadScene("Credits");
+    }
+
     IEnumerator PlayerWins()
     {
         yield return new WaitForSeconds(1);
