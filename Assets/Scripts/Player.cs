@@ -104,7 +104,10 @@ public class Player : MonoBehaviour
         if (myridigBody2D.velocity.y < -0.1)
         {
             myAnimator.SetBool("IsFalling", true);
-            SetMovementSpeed(0f); // The player cannot move while falling
+            for (int i = 5 - 1; i >= 0; i--)
+            {
+                SetMovementSpeed(i); // The player cannot move while falling
+            }
         }
         else
         {

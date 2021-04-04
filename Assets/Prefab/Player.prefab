@@ -216,10 +216,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa5b9cdc11c34a149a79134a42140e1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 500
+  health: 150
   stamina: 150
   playerSpeed: 5
-  jumpSpeed: 9
+  jumpSpeed: 7
   attackDamage: 500
   attackRate: 2
   attackRange: 0.09
