@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     CapsuleCollider2D bodyCollider;
 
     // Local variables
+    private bool isAlive = true;
     private float timeToDestroy = 5f;
     private float nextAttackTime = 0f;
     private bool playerBlocking = false;
@@ -37,16 +38,22 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
-        Jump();
-        Fall();
-        Attack();
-        PlayerBlock();
+        if (isAlive)
+        {
+            Jump();
+            Fall();
+            Attack();
+            PlayerBlock();
+        }
     }
 
     void FixedUpdate()
     {
-        Run();
-        FlipSprite();
+        if (isAlive)
+        {
+            Run();
+            FlipSprite();
+        }
     }
 
     public void DamageTaken(int damageAmount)
@@ -148,8 +155,11 @@ public class Player : MonoBehaviour
     void Die()
     {
         bodyCollider.enabled = false;
+        
+        isAlive = false;
+        playerBlocking = false;
 
-        myAnimator.SetTrigger("IsDead");
+        myAnimator.SetBool("IsDead", !isAlive);
         Destroy(gameObject, timeToDestroy);
 
         FindObjectOfType<LevelManager>().LoadGameOver();
