@@ -2,11 +2,11 @@
 
 public class Borders : MonoBehaviour
 { 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (other.gameObject.tag.Equals("Enemy"))
+        if (collision.gameObject.tag.Equals("Enemy"))
         {
-            other.GetComponent<Enemy>().RandomCrouchAnimation();
+            collision.gameObject.GetComponent<Enemy>().RandomCrouchAnimation();
         }
     }
 }

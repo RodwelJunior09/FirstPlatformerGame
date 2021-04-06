@@ -24,6 +24,7 @@ public class Enemy : MonoBehaviour
 
     // Components Variables
     Animator _myAnimator;
+    BoxCollider2D _myFeet;
     Rigidbody2D _myRigidBody2D;
     BoxCollider2D _myEnemyVision;
     CapsuleCollider2D _enemyBody;
@@ -46,10 +47,12 @@ public class Enemy : MonoBehaviour
         ResetCounters();
         tagEnemy = gameObject.tag;
         _myAnimator = GetComponent<Animator>();
+        _myFeet = GetComponent<BoxCollider2D>();
         _myRigidBody2D = GetComponent<Rigidbody2D>();
         _enemyBody = GetComponent<CapsuleCollider2D>();
         _myEnemyVision = transform.Find("FieldOfView").GetComponent<BoxCollider2D>();
         _myEnemyAttackRadius = transform.Find("FieldOfView").GetComponent<CircleCollider2D>();
+        _myFeet.enabled = false;
     }
 
     // Update is called once per frame
@@ -95,11 +98,9 @@ public class Enemy : MonoBehaviour
 
     public void RandomCrouchAnimation()
     {
-        var randomNumber = Random.Range(1, 10);
-        if (randomNumber % 2 != 0)
-            StartCoroutine(FlipSprite(true)); // Flip sprite with crouching animation
-        else
-            StartCoroutine(FlipSprite()); // Flip sprite with no crouching animation
+        //var randomNumber = Random.Range(1, 10);
+        //if (randomNumber % 2 != 0)
+        FlipSprite();
     }
     
     void EnemyStageTransition()
@@ -222,13 +223,10 @@ public class Enemy : MonoBehaviour
         return transform.localScale.x > 0;
     }
 
-    IEnumerator FlipSprite(bool crouchingAnimation = false)
+    void FlipSprite(bool crouchingAnimation = false)
     {
-        if (crouchingAnimation)
-        {
-            _myAnimator.SetTrigger("IsSearching");
-            yield return new WaitForSeconds(2);
-        }
+        //if (crouchingAnimation)
+        //    _myAnimator.SetTrigger("IsSearching");
         transform.localScale = new Vector2(Mathf.Sign(_myRigidBody2D.velocity.x), 1f);
     }
 
@@ -249,6 +247,7 @@ public class Enemy : MonoBehaviour
     void DisableEnemyColliders()
     {
         patrol = false;
+        _myFeet.enabled = true; // This is for the enemy falling off the world when dying.
         _myEnemyVision.enabled = false;
         _enemyBody.enabled = false;
         _myEnemyAttackRadius.enabled = false;
@@ -260,8 +259,6 @@ public class Enemy : MonoBehaviour
         _enemyBody.enabled = true;
         _myEnemyAttackRadius.enabled = true;
     }
-
-    
 
     private void OnDrawGizmosSelected()
     {
