@@ -219,7 +219,7 @@ MonoBehaviour:
   health: 350
   stamina: 150
   playerSpeed: 5
-  jumpSpeed: 7
+  jumpSpeed: 7.5
   attackDamage: 50
   attackRate: 2
   attackRange: 0.09

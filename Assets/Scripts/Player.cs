@@ -56,6 +56,8 @@ public class Player : MonoBehaviour
         }
     }
 
+    public int GetHealth() => health;
+
     public void DamageTaken(int damageAmount)
     {
         if (playerBlocking) // If player blocks reduce half of the damage.

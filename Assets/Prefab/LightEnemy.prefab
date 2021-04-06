@@ -278,7 +278,7 @@ MonoBehaviour:
   attackRange: 0.23
   maxAttackTime: 1.5
   minAttackTime: 0.5
-  patrol: 1
+  patrol: 0
   attackPoint: {fileID: 1363007228}
   restingSeconds: 0
   limitHelperEnemies: 3
