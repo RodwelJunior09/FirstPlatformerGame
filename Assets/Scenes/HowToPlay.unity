@@ -1111,17 +1111,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'How to play
-
-
-    Move: A, W, S, D
-
-    Attack: Left Click Mouse, J
-
-    Cover:
-    Right click Mouse, K
-
-    Space: Jump'
+  m_text: "How to play\n\nMove: A, W, S, D\nAttack:  J\nCover:  K\nSpace: Jump\n\nTips:
+    \nWhen you use your shield, to block incoming attacks, the damage done will be
+    reduce not eliminated."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 16c4757dcb983da4b8c927754963fc94, type: 2}
   m_sharedMaterial: {fileID: -8399454389905381403, guid: 16c4757dcb983da4b8c927754963fc94,
@@ -1149,8 +1141,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 26
+  m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

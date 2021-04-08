@@ -846,9 +846,28 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Credits:\n\nMusic:\n\nMiguel Herrero - Medieval (Main Menu Music) \nAlexandr
-    Zhelanov - Blessed to kill (Main Theme)\n\nAssets (Unity Assets Store):\n\nBandits
-    - Pixel Art (Sven Thole)\nHero Knight - Pixel Art (Sven Thole)\n\n\n\n"
+  m_text: 'Credits:
+
+
+    Music:
+
+
+    Alexandr Zhelanov - Blessed to kill (Main
+    Theme)
+
+
+    Assets (Unity Assets Store):
+
+
+    Bandits - Pixel Art (Sven Thole)
+
+    Hero
+    Knight - Pixel Art (Sven Thole)
+
+
+
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 16c4757dcb983da4b8c927754963fc94, type: 2}
   m_sharedMaterial: {fileID: -8399454389905381403, guid: 16c4757dcb983da4b8c927754963fc94,
@@ -876,7 +895,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26.45
+  m_fontSize: 30.45
   m_fontSizeBase: 21
   m_fontWeight: 400
   m_enableAutoSizing: 1
