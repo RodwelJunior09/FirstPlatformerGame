@@ -23,6 +23,7 @@ public class LevelManager : MonoBehaviour
     public void LoadFirstLevel()
     {
         SceneManager.LoadScene("IntroductionToTheCave");
+        FindObjectOfType<LifeStatus>().ResetGame();
     }
 
     public void LoadWinLevel()

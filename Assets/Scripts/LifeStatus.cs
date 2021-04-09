@@ -1,21 +1,39 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class LifeStatus : MonoBehaviour
 {
-    TextMeshProUGUI textLife;
-    Player player;
+    int playerHealth;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        player = FindObjectOfType<Player>();
-        textLife = GetComponent<TextMeshProUGUI>();
+        SaveData();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        textLife.text = player.GetHealth().ToString();
+        playerHealth = FindObjectOfType<Player>().GetHealth();
+    }
+
+    public void DecreasePlayerHealth(int damage)
+    {
+        playerHealth -= damage;
+        if (playerHealth <= 0)
+            playerHealth = 0;
+    }
+
+    public void ResetGame()
+    {
+        Destroy(gameObject);
+    }
+
+    public int GetPlayerHealth() => playerHealth;
+
+    private void SaveData()
+    {
+        int amountOfObjects = FindObjectsOfType<LifeStatus>().Length;
+        if (amountOfObjects > 1)
+            Destroy(gameObject);
+        else
+            DontDestroyOnLoad(gameObject);
     }
 }

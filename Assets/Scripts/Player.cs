@@ -66,6 +66,7 @@ public class Player : MonoBehaviour
             myAnimator.SetTrigger("Blocked");
         }
         health -= damageAmount;
+        FindObjectOfType<LifeStatus>().DecreasePlayerHealth(damageAmount);
         if (!playerBlocking) myAnimator.SetTrigger("IsHit");
         if (health <= 0) Die();
     }
