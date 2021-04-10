@@ -27,8 +27,7 @@ public class Player : MonoBehaviour
     private bool isAlive = true;
     private float timeToDestroy = 5f;
     private float nextAttackTime = 0f;
-    private bool playerBlocking = false;
-    private bool playerAttack = false;
+    private bool isPlayerBlocking = false;
 
     private void Start()
     {
@@ -62,14 +61,14 @@ public class Player : MonoBehaviour
 
     public void DamageTaken(int damageAmount)
     {
-        if (playerBlocking) // If player blocks reduce half of the damage.
+        if (isPlayerBlocking) // If player blocks reduce half of the damage.
         {
             damageAmount /= 2;
             myAnimator.SetTrigger("Blocked");
         }
         health -= damageAmount;
         FindObjectOfType<LifeStatus>().DecreasePlayerHealth(damageAmount);
-        if (!playerBlocking) myAnimator.SetTrigger("IsHit");
+        if (!isPlayerBlocking) myAnimator.SetTrigger("IsHit");
         if (health <= 0) Die();
     }
 
@@ -77,19 +76,20 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.K))
         {
+            myAnimator.SetBool("IsRunning", false); // Set the running animation false.
             myAnimator.SetBool("IsBlocking", true); // Implement the damage reduction when blocking.
-            playerBlocking = true;
+            isPlayerBlocking = true;
         }
         else
         {
             myAnimator.SetBool("IsBlocking", false);
-            playerBlocking = false;
+            isPlayerBlocking = false;
         }
     }
 
     void Run()
     {
-        if (!playerBlocking)
+        if (!isPlayerBlocking)
         {
             float flowControl = Input.GetAxis("Horizontal") * playerSpeed;
             Vector2 playerVelocity = new Vector2(flowControl, myridigBody2D.velocity.y);
@@ -130,7 +130,8 @@ public class Player : MonoBehaviour
 
     void Attack()
     {
-        if (Time.time >= nextAttackTime)
+        bool playerHorizontalSpeed = Mathf.Abs(myridigBody2D.velocity.x) > Mathf.Epsilon;
+        if (Time.time >= nextAttackTime && !playerHorizontalSpeed)
         {
             if (Input.GetButtonDown("Fire1"))
             {
@@ -162,7 +163,7 @@ public class Player : MonoBehaviour
         bodyCollider.enabled = false;
         
         isAlive = false;
-        playerBlocking = false;
+        isPlayerBlocking = false;
 
         myAnimator.SetBool("IsDead", !isAlive);
         Destroy(gameObject, timeToDestroy);
