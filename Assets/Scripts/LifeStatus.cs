@@ -7,10 +7,6 @@ public class LifeStatus : MonoBehaviour
     private void Awake()
     {
         SaveData();
-    }
-
-    private void Start()
-    {
         playerHealth = FindObjectOfType<Player>().GetHealth();
     }
 

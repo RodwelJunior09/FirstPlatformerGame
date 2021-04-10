@@ -28,13 +28,15 @@ public class Player : MonoBehaviour
     private float timeToDestroy = 5f;
     private float nextAttackTime = 0f;
     private bool playerBlocking = false;
+    private bool playerAttack = false;
 
     private void Start()
     {
         myAnimator = GetComponent<Animator>();
         myridigBody2D = GetComponent<Rigidbody2D>();
-        bodyCollider = GetComponent<CapsuleCollider2D>();
         myFeetCollider = GetComponent<BoxCollider2D>();
+        bodyCollider = GetComponent<CapsuleCollider2D>();
+        health = FindObjectOfType<LifeStatus>().GetPlayerHealth();
     }
     void Update()
     {
