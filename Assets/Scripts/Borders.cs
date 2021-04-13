@@ -4,9 +4,10 @@ public class Borders : MonoBehaviour
 { 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag.Equals("Enemy"))
+        var gameObjectTag = collision.gameObject.tag;
+        if (gameObjectTag.Equals("Enemy") || gameObjectTag.Equals("Boss"))
         {
-            collision.gameObject.GetComponent<Enemy>().RandomCrouchAnimation();
+            collision.gameObject.GetComponent<Enemy>().FlipSprite();
         }
     }
 }

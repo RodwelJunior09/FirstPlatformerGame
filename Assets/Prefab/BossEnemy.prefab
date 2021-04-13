@@ -105,7 +105,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4082081970688926648}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.015, y: 0.56, z: 0}
+  m_LocalPosition: {x: -1.015, y: 0.82, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4082081971708812814}
@@ -122,6 +122,7 @@ GameObject:
   - component: {fileID: 4082081971123826707}
   - component: {fileID: 4082081971123826704}
   - component: {fileID: 4082081971123826705}
+  - component: {fileID: 3496795644552166302}
   m_Layer: 0
   m_Name: FieldOfView
   m_TagString: Untagged
@@ -156,9 +157,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.009703191, y: 0.54116964}
+  m_Offset: {x: 0.027139511, y: 0.27912214}
   serializedVersion: 2
-  m_Radius: 0.75064164
+  m_Radius: 0.5736966
 --- !u!61 &4082081971123826705
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -172,7 +173,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -2.722492, y: 0.82188183}
+  m_Offset: {x: -0.65233755, y: 0.70999074}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -183,8 +184,24 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 6.3284516, y: 0.8820902}
+  m_Size: {x: 9.066508, y: 0.8432059}
   m_EdgeRadius: 0
+--- !u!70 &3496795644552166302
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4082081971123826706}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 7bfb301c13a976243b7f3fe2e57abb0c, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.1536147, y: 1.1605002}
+  m_Size: {x: 0.5249285, y: 0.73950326}
+  m_Direction: 0
 --- !u!1 &4082081971708812809
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,8 +293,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.012015502, y: 1.1646266}
-  m_Size: {x: 0.89773643, y: 1.49073}
+  m_Offset: {x: 0.016897362, y: 0.8760514}
+  m_Size: {x: 0.582639, y: 1.002614}
   m_Direction: 0
 --- !u!114 &4082081971708812818
 MonoBehaviour:
@@ -292,10 +309,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 700
-  enemySpeed: 3
-  enemyAttackValue: 75
-  attackRange: 0.14
-  maxAttackTime: 5
+  enemySpeed: 4
+  enemyAttackValue: 90
+  attackRange: 0.33
+  maxAttackTime: 3
   minAttackTime: 1
   patrol: 0
   attackPoint: {fileID: 4082081970688926649}

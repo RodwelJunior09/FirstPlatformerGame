@@ -97,12 +97,6 @@ public class Enemy : MonoBehaviour
                 FlipSprite();
         }
     }
-
-
-    public void RandomCrouchAnimation()
-    {
-        FlipSprite();
-    }
     
     void EnemyStageTransition()
     {
@@ -248,9 +242,12 @@ public class Enemy : MonoBehaviour
         return transform.localScale.x > 0;
     }
 
-    void FlipSprite(bool crouchingAnimation = false)
+    public void FlipSprite(bool crouchingAnimation = false)
     {
-        transform.localScale = new Vector2(Mathf.Sign(_myRigidBody2D.velocity.x), 1f);
+        if (tagEnemy.Contains("Boss"))
+            transform.localScale = new Vector2(Mathf.Sign(_myRigidBody2D.velocity.x) + 0.5f, 1.5f);
+        else
+            transform.localScale = new Vector2(Mathf.Sign(_myRigidBody2D.velocity.x), 1f);
     }
 
     void Die()
