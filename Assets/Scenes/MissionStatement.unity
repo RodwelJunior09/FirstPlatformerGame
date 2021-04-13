@@ -1112,7 +1112,8 @@ MonoBehaviour:
   m_text: "A town of the kingdom is getting attack by a band of bandits located on
     a cave nearby. \n\nYou as a knight have heard the called of the citizens and
     decided to embark of the adventure of fighting this bandits and save the town
-    of getting attack again."
+    of getting attack again. \n\nYou have to survive all the enemies. You have one
+    life only. Be cafeful hero"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 16c4757dcb983da4b8c927754963fc94, type: 2}
   m_sharedMaterial: {fileID: -8399454389905381403, guid: 16c4757dcb983da4b8c927754963fc94,
@@ -1140,8 +1141,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 28
+  m_fontSizeBase: 28
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

@@ -23,6 +23,7 @@ public class LevelManager : MonoBehaviour
     public void LoadFirstLevel()
     {
         SceneManager.LoadScene("IntroductionToTheCave");
+        FindObjectOfType<LifeStatus>().ResetGame();
     }
 
     public void LoadWinLevel()
@@ -42,13 +43,13 @@ public class LevelManager : MonoBehaviour
 
     IEnumerator PlayerWins()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(3);
         SceneManager.LoadScene("WinScreen");
     }
 
     IEnumerator GameOver()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2);
         SceneManager.LoadScene("LoseScreen");
     }
 }

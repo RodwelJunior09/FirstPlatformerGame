@@ -216,13 +216,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa5b9cdc11c34a149a79134a42140e1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 500
+  health: 350
   stamina: 150
   playerSpeed: 5
-  jumpSpeed: 9
-  attackDamage: 500
+  jumpSpeed: 7
+  attackDamage: 50
   attackRate: 2
-  attackRange: 0.09
+  attackRange: 0.18
   attackPoint: {fileID: 743618366}
 --- !u!61 &2085958187
 BoxCollider2D:

@@ -24,6 +24,7 @@ public class Enemy : MonoBehaviour
 
     // Components Variables
     Animator _myAnimator;
+    BoxCollider2D _myFeet;
     Rigidbody2D _myRigidBody2D;
     BoxCollider2D _myEnemyVision;
     CapsuleCollider2D _enemyBody;
@@ -35,10 +36,13 @@ public class Enemy : MonoBehaviour
     
     // Boss variables
     private string tagEnemy;
-    private bool isBossAlive = true;
+    private Vector2 enemyVelocity;
     private bool crouching = false;
     private bool enemyStage = false;
+    private bool isBossAlive = true;
     private int helperEnemiesCount = 0;
+    private bool isOnRightSide = false;
+    private bool isOnLeftSide = false;
 
     // Start is called before the first frame update
     void Start()
@@ -46,10 +50,12 @@ public class Enemy : MonoBehaviour
         ResetCounters();
         tagEnemy = gameObject.tag;
         _myAnimator = GetComponent<Animator>();
+        _myFeet = GetComponent<BoxCollider2D>();
         _myRigidBody2D = GetComponent<Rigidbody2D>();
         _enemyBody = GetComponent<CapsuleCollider2D>();
         _myEnemyVision = transform.Find("FieldOfView").GetComponent<BoxCollider2D>();
         _myEnemyAttackRadius = transform.Find("FieldOfView").GetComponent<CircleCollider2D>();
+        _myFeet.enabled = false;
     }
 
     // Update is called once per frame
@@ -81,25 +87,15 @@ public class Enemy : MonoBehaviour
             if (tagEnemy.Contains("Boss"))
                 transform.localScale = new Vector2(-1.5f, 1.5f);
             else
-                transform.localScale = new Vector2(-1f, 1f);
+                FlipSprite();
         }
         if (playerPosition.localScale.x > 0 && transform.localScale.x < 0)
         {
             if (tagEnemy.Contains("Boss"))
                 transform.localScale = new Vector2(1.5f, 1.5f);
             else
-                transform.localScale = new Vector2(1f, 1f);
+                FlipSprite();
         }
-    }
-
-
-    public void RandomCrouchAnimation()
-    {
-        var randomNumber = Random.Range(1, 10);
-        if (randomNumber % 2 != 0)
-            StartCoroutine(FlipSprite(true)); // Flip sprite with crouching animation
-        else
-            StartCoroutine(FlipSprite()); // Flip sprite with no crouching animation
     }
     
     void EnemyStageTransition()
@@ -183,7 +179,8 @@ public class Enemy : MonoBehaviour
         if (!isRangeOfAttack && isRangeOfVision)
         {
             ApproachThePlayer();
-            if(!tagEnemy.Contains("Boss")) patrol = true;
+            if(!tagEnemy.Contains("Boss")) 
+                patrol = true;
         }
         if (isRangeOfVision && isRangeOfAttack)
             StopRunning();
@@ -199,13 +196,36 @@ public class Enemy : MonoBehaviour
 
     void ApproachThePlayer()
     {
-        Vector2 enemyRididBody;
+        var playerPos = FindObjectOfType<Player>().transform;
+        ChangeOrientationOfMovement(playerPos);
         _myAnimator.SetBool("IsRunning", true);
         if (transform.localScale.x > 0)
-            enemyRididBody = new Vector2(-enemySpeed, _myRigidBody2D.velocity.y);
+            enemyVelocity = new Vector2(-enemySpeed, _myRigidBody2D.velocity.y);
         else
-            enemyRididBody = new Vector2(enemySpeed, _myRigidBody2D.velocity.y);
-        _myRigidBody2D.velocity = enemyRididBody;
+            enemyVelocity = new Vector2(enemySpeed, _myRigidBody2D.velocity.y);
+        _myRigidBody2D.velocity = enemyVelocity;
+    }
+
+    void ChangeOrientationOfMovement(Transform playerTransform)
+    {
+        if (transform.position.x < playerTransform.position.x)
+        {
+            if (!isOnRightSide)
+            {
+                FlipSprite();
+                isOnRightSide = true;
+                isOnLeftSide = false;
+            }
+        }
+        if (transform.position.x > playerTransform.position.x)
+        {
+            if (!isOnLeftSide)
+            {
+                FlipSprite();
+                isOnLeftSide = true;
+                isOnRightSide = false;
+            }
+        }
     }
 
     void EnemyPatrol()
@@ -222,14 +242,12 @@ public class Enemy : MonoBehaviour
         return transform.localScale.x > 0;
     }
 
-    IEnumerator FlipSprite(bool crouchingAnimation = false)
+    public void FlipSprite(bool crouchingAnimation = false)
     {
-        if (crouchingAnimation)
-        {
-            _myAnimator.SetTrigger("IsSearching");
-            yield return new WaitForSeconds(2);
-        }
-        transform.localScale = new Vector2(Mathf.Sign(_myRigidBody2D.velocity.x), 1f);
+        if (tagEnemy.Contains("Boss"))
+            transform.localScale = new Vector2(Mathf.Sign(_myRigidBody2D.velocity.x) + 0.5f, 1.5f);
+        else
+            transform.localScale = new Vector2(Mathf.Sign(_myRigidBody2D.velocity.x), 1f);
     }
 
     void Die()
@@ -249,6 +267,7 @@ public class Enemy : MonoBehaviour
     void DisableEnemyColliders()
     {
         patrol = false;
+        _myFeet.enabled = true; // This is for the enemy falling off the world when dying.
         _myEnemyVision.enabled = false;
         _enemyBody.enabled = false;
         _myEnemyAttackRadius.enabled = false;
@@ -260,8 +279,6 @@ public class Enemy : MonoBehaviour
         _enemyBody.enabled = true;
         _myEnemyAttackRadius.enabled = true;
     }
-
-    
 
     private void OnDrawGizmosSelected()
     {

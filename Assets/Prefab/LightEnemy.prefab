@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 874346943}
   - component: {fileID: 874346944}
   - component: {fileID: 874346945}
+  - component: {fileID: 1799581557457892436}
   m_Layer: 0
   m_Name: FieldOfView
   m_TagString: Untagged
@@ -26,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 874346942}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.046, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7374371115454156945}
@@ -45,7 +46,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -2.3116806, y: 0.94455767}
+  m_Offset: {x: -0.030993462, y: 1.0754437}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -56,7 +57,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 5.8222146, y: 0.68183327}
+  m_Size: {x: 7.334242, y: 0.24990845}
   m_EdgeRadius: 0
 --- !u!58 &874346945
 CircleCollider2D:
@@ -74,6 +75,22 @@ CircleCollider2D:
   m_Offset: {x: 0.045901, y: 0.8021096}
   serializedVersion: 2
   m_Radius: 0.42268097
+--- !u!70 &1799581557457892436
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874346942}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 7bfb301c13a976243b7f3fe2e57abb0c, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.012120247, y: 1.1877924}
+  m_Size: {x: 0.43129158, y: 0.56153035}
+  m_Direction: 0
 --- !u!1 &1363007227
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,6 +215,7 @@ GameObject:
   - component: {fileID: 7374371115454156959}
   - component: {fileID: 7374371115454156958}
   - component: {fileID: 7374371115454156957}
+  - component: {fileID: 1042615884}
   m_Layer: 11
   m_Name: LightEnemy
   m_TagString: Enemy
@@ -235,8 +253,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.02738583, y: 0.7016685}
-  m_Size: {x: 0.6079968, y: 1.2596145}
+  m_Offset: {x: 0.008461952, y: 0.682745}
+  m_Size: {x: 0.50336266, y: 0.9011812}
   m_Direction: 0
 --- !u!50 &7374371115454156959
 Rigidbody2D:
@@ -246,11 +264,11 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7374371115454156946}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
+  m_UseFullKinematicContacts: 1
+  m_UseAutoMass: 1
+  m_Mass: 0.696693
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -271,15 +289,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c6627231e022604387eabfe9c28c03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 150
+  health: 200
   enemySpeed: 2.5
   enemyAttackValue: 20
   attackRange: 0.23
-  maxAttackTime: 1
+  maxAttackTime: 1.5
   minAttackTime: 0.5
   patrol: 0
-  restingSeconds: 0
   attackPoint: {fileID: 1363007228}
+  restingSeconds: 0
+  limitHelperEnemies: 3
 --- !u!95 &7374371115454156957
 Animator:
   serializedVersion: 3
@@ -299,3 +318,29 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!61 &1042615884
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7374371115454156946}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.017696857, y: 0.11149144}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.6177435, y: 0.15407991}
+  m_EdgeRadius: 0

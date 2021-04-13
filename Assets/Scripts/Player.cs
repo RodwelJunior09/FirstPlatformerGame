@@ -24,40 +24,51 @@ public class Player : MonoBehaviour
     CapsuleCollider2D bodyCollider;
 
     // Local variables
+    private bool isAlive = true;
     private float timeToDestroy = 5f;
     private float nextAttackTime = 0f;
-    private bool playerBlocking = false;
+    private bool isPlayerBlocking = false;
 
     private void Start()
     {
         myAnimator = GetComponent<Animator>();
         myridigBody2D = GetComponent<Rigidbody2D>();
-        bodyCollider = GetComponent<CapsuleCollider2D>();
         myFeetCollider = GetComponent<BoxCollider2D>();
+        bodyCollider = GetComponent<CapsuleCollider2D>();
+        health = FindObjectOfType<LifeStatus>().GetPlayerHealth();
     }
     void Update()
     {
-        Jump();
-        Fall();
-        Attack();
-        PlayerBlock();
+        if (isAlive)
+        {
+            Jump();
+            Fall();
+            Attack();
+            PlayerBlock();
+        }
     }
 
     void FixedUpdate()
     {
-        Run();
-        FlipSprite();
+        if (isAlive)
+        {
+            Run();
+            FlipSprite();
+        }
     }
+
+    public int GetHealth() => health;
 
     public void DamageTaken(int damageAmount)
     {
-        if (playerBlocking) // If player blocks reduce half of the damage.
+        if (isPlayerBlocking) // If player blocks reduce half of the damage.
         {
             damageAmount /= 2;
             myAnimator.SetTrigger("Blocked");
         }
         health -= damageAmount;
-        if (!playerBlocking) myAnimator.SetTrigger("IsHit");
+        FindObjectOfType<LifeStatus>().DecreasePlayerHealth(damageAmount);
+        if (!isPlayerBlocking) myAnimator.SetTrigger("IsHit");
         if (health <= 0) Die();
     }
 
@@ -65,23 +76,27 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.K))
         {
+            myAnimator.SetBool("IsRunning", false); // Set the running animation false.
             myAnimator.SetBool("IsBlocking", true); // Implement the damage reduction when blocking.
-            playerBlocking = true;
+            isPlayerBlocking = true;
         }
         else
         {
             myAnimator.SetBool("IsBlocking", false);
-            playerBlocking = false;
+            isPlayerBlocking = false;
         }
     }
 
     void Run()
     {
-        float flowControl = Input.GetAxis("Horizontal") * playerSpeed;
-        Vector2 playerVelocity = new Vector2(flowControl, myridigBody2D.velocity.y);
-        myridigBody2D.velocity = playerVelocity;
-        bool playerHorizontalSpeed = Mathf.Abs(myridigBody2D.velocity.x) > Mathf.Epsilon;
-        myAnimator.SetBool("IsRunning", playerHorizontalSpeed);
+        if (!isPlayerBlocking)
+        {
+            float flowControl = Input.GetAxis("Horizontal") * playerSpeed;
+            Vector2 playerVelocity = new Vector2(flowControl, myridigBody2D.velocity.y);
+            myridigBody2D.velocity = playerVelocity;
+            bool playerHorizontalSpeed = Mathf.Abs(myridigBody2D.velocity.x) > Mathf.Epsilon;
+            myAnimator.SetBool("IsRunning", playerHorizontalSpeed);
+        }
     }
 
     void Jump()
@@ -101,7 +116,10 @@ public class Player : MonoBehaviour
         if (myridigBody2D.velocity.y < -0.1)
         {
             myAnimator.SetBool("IsFalling", true);
-            SetMovementSpeed(0f); // The player cannot move while falling
+            for (int i = 5 - 1; i >= 0; i--)
+            {
+                SetMovementSpeed(i); // The player cannot move while falling
+            }
         }
         else
         {
@@ -112,7 +130,8 @@ public class Player : MonoBehaviour
 
     void Attack()
     {
-        if (Time.time >= nextAttackTime)
+        bool playerHorizontalSpeed = Mathf.Abs(myridigBody2D.velocity.x) > Mathf.Epsilon;
+        if (Time.time >= nextAttackTime && !playerHorizontalSpeed)
         {
             if (Input.GetButtonDown("Fire1"))
             {
@@ -142,8 +161,11 @@ public class Player : MonoBehaviour
     void Die()
     {
         bodyCollider.enabled = false;
+        
+        isAlive = false;
+        isPlayerBlocking = false;
 
-        myAnimator.SetTrigger("IsDead");
+        myAnimator.SetBool("IsDead", !isAlive);
         Destroy(gameObject, timeToDestroy);
 
         FindObjectOfType<LevelManager>().LoadGameOver();
